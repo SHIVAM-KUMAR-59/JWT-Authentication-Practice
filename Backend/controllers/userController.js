@@ -52,6 +52,64 @@ class UserController {
       })
     }
   }
+
+  // Login method for logging in an existing user
+  static userLogin = async (req, res) => {
+    try {
+      const { email, password } = req.body
+      if (email && password) {
+        // Find the user by email in the database
+        const user = await UserModel.findOne({ email: email })
+        if (user) {
+          // Compare the provided email with the email in the database
+          if (email === user.email) {
+            // Compare the provided password with the hashed password in the database
+            const isValidPassword = await bcrypt.compare(
+              password,
+              user.password,
+            )
+            if (isValidPassword) {
+              // Return a success response with the user's data
+              return res.status(200).json({
+                status: 'success',
+                message: 'User logged in successfully',
+              })
+            } else {
+              // If the passwords do not match, return an error response
+              return res.status(401).json({
+                status: 'failed',
+                message: 'Invalid credentials',
+              })
+            }
+          } else {
+            // If the email do not match, return an error response
+            return res.status(400).send({
+              status: 'failed',
+              message: 'Invalid credentials',
+            })
+          }
+        } else {
+          // If the user is not found, return an error response
+          return res.status(404).send({
+            status: 'failed',
+            message: 'User not found',
+          })
+        }
+      } else {
+        // If the email or password is missing, return an error response
+        return res.status(400).send({
+          status: 'failed',
+          message: 'Email and password are required',
+        })
+      }
+    } catch (error) {
+      // If an error occurs, return an error response
+      return res.status(400).send({
+        status: 'failed',
+        message: 'Failed to login user due to server error',
+      })
+    }
+  }
 }
 
 export default UserController
