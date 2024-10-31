@@ -2,6 +2,7 @@ import dotenv from 'dotenv'
 import express from 'express'
 import cors from 'cors'
 import { connectDb } from './config/connectDb.js'
+import userRoutes from './routes/userRoutes.js'
 
 dotenv.config()
 
@@ -17,6 +18,8 @@ connectDb(DATABASE_URI)
 
 // JSON conversion
 app.use(express.json())
+
+app.use('/api/user', userRoutes)
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`)
