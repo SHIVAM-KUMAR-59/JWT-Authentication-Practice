@@ -48,6 +48,7 @@ To set up the project locally, follow these steps:
    ```bash
    git clone https://github.com/your-username/jwt-authentication-practice.git
    cd jwt-authentication-practice
+   cd Backend
    ```
 
 2. **Install Dependencies**:
