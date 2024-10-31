@@ -13,7 +13,7 @@ class UserController {
       const user = await UserModel.findOne({ email: email })
       if (user) {
         // If a user with the email already exists, return an error response
-        return res.status(400).json({
+        return res.status(400).send({
           status: 'failed',
           message: 'Email already exists, kindly try another email',
         })
@@ -29,14 +29,27 @@ class UserController {
         const newUser = new UserModel({ name, email, password: hashedPassword })
         await newUser.save()
 
+        const savedUser = await UserModel.findOne({ email: email })
+        // Generating JWT token
+        const token = jwt.sign(
+          {
+            userId: savedUser._id,
+          },
+          process.env.JWT_SECRET_KEY,
+          {
+            expiresIn: '5d',
+          },
+        )
+
         // Return success response after saving the new user
-        return res.status(201).json({
+        return res.status(201).send({
           status: 'success',
           message: 'User created successfully',
+          token: token,
         })
       } else {
         // If validation fails (missing fields or mismatched passwords), return an error response
-        return res.status(400).json({
+        return res.status(400).send({
           status: 'failed',
           message: 'All fields are required and passwords must match',
         })
@@ -46,7 +59,7 @@ class UserController {
       console.error('Error during registration:', error)
 
       // Return a server error response if an exception is thrown
-      return res.status(500).json({
+      return res.status(500).send({
         status: 'failed',
         message: 'Failed to create user due to server error',
       })
@@ -69,14 +82,26 @@ class UserController {
               user.password,
             )
             if (isValidPassword) {
+              // Generate  a JWT token for the user
+              const token = jwt.sign(
+                {
+                  userId: user._id,
+                },
+                process.env.JWT_SECRET_KEY,
+                {
+                  expiresIn: '5d',
+                },
+              )
+
               // Return a success response with the user's data
-              return res.status(200).json({
+              return res.status(200).send({
                 status: 'success',
                 message: 'User logged in successfully',
+                token: token,
               })
             } else {
               // If the passwords do not match, return an error response
-              return res.status(401).json({
+              return res.status(401).send({
                 status: 'failed',
                 message: 'Invalid credentials',
               })
