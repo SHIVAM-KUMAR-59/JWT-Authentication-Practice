@@ -135,6 +135,37 @@ class UserController {
       })
     }
   }
+
+  // Change password method
+  static changeUserPassword = async (req, res) => {
+    const { password, password_confirmation } = req.body
+
+    if (password && password_confirmation) {
+      if (password === password_confirmation) {
+        const salt = await bcrypt.genSalt(12)
+        const newHashedPassword = await bcrypt.hash(password, salt)
+        await UserModel.findByIdAndUpdate(req.user._id, {
+          $set: {
+            password: newHashedPassword,
+          },
+        })
+        res.status(200).send({
+          status: 'success',
+          message: 'Password changed successfully',
+        })
+      } else {
+        return res.status(400).send({
+          status: 'failed',
+          message: 'Passwords do not match',
+        })
+      }
+    } else {
+      return res.status(400).send({
+        status: 'failed',
+        message: 'All fields are required',
+      })
+    }
+  }
 }
 
 export default UserController
