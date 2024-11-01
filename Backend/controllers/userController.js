@@ -166,6 +166,11 @@ class UserController {
       })
     }
   }
+
+  // Path to get the information of a logged user
+  static loggedUser = async (req, res) => {
+    res.send({ user: req.user })
+  }
 }
 
 export default UserController
