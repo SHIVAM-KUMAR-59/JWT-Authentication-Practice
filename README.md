@@ -4,11 +4,12 @@ This project is a practice implementation of JSON Web Token (JWT) authentication
 
 ## Table of Contents
 
-- ✨[Features](#✨-features)
-- 📚[Packages Used](#📚packages-used)
-- ⚒️[Getting Started](#⚒️-getting-started)
-- 🍀[Environment Variables](#🍀-environment-variables)
-- 👏[Acknowledgements](#👏-acknowledgements)
+- ✨ [Features](#✨-features)
+- 📚 [Packages Used](#📚packages-used)
+- ⚒️ [Getting Started](#⚒️-getting-started)
+- 🔐 [Environment Variables](#🔐-environment-variables)
+- 📩 [API-Routes](#📩-api-routes)
+- 👏 [Acknowledgements](#👏-acknowledgements)
 
 ---
 
@@ -69,13 +70,56 @@ To set up the project locally, follow these steps:
    `For production: npm start` <br/>
    `For development: npm run dev`
 
-## <a name="environment-variables">🍀 Environment Variables</a>
+## <a name="environment-variables">🔐 Environment Variables</a>
 
-| Variable         | Description                   |
-| ---------------- | ----------------------------- |
-| `PORT`           | Port number to run the server |
-| `DATABASE_URI`   | MongoDB connection string     |
-| `JWT_SECRET_KEY` | Secret key for JWT signing    |
+| Variable         | Description                       |
+| ---------------- | --------------------------------- |
+| `PORT`           | Port number to run the server     |
+| `DATABASE_URI`   | MongoDB connection string         |
+| `JWT_SECRET_KEY` | Secret key for JWT signing        |
+| `EMAIL_HOST`     | SMTP host for email server        |
+| `EMAIL_PORT`     | Port number for SMTP connection   |
+| `EMAIL_USER`     | Username for SMTP authentication  |
+| `EMAIL_PASS`     | Password or app password for SMTP |
+| `EMAIL_FROM`     | Default email address for sender  |
+
+## <a name="api-routes">📩 API Routes</a>
+
+### Public Routes
+
+These routes do not require authentication.
+
+| Method | Endpoint                         | Description                  |
+| ------ | -------------------------------- | ---------------------------- |
+| POST   | `/api/register`                  | Register a new user          |
+| POST   | `/api/login`                     | Log in with user credentials |
+| POST   | `/api/send-reset-password-email` | Send a password reset email  |
+| POST   | `/api/reset-password/:id/:token` | Reset the user's password    |
+
+### Protected Routes
+
+These routes require authentication, protected by the `checkUserAuth` middleware.
+
+| Method | Endpoint              | Description                        |
+| ------ | --------------------- | ---------------------------------- |
+| POST   | `/api/changepassword` | Change password for logged-in user |
+| GET    | `/api/loggeduser`     | Get details of the logged-in user  |
+
+### Route-Level Middleware
+
+The `checkUserAuth` middleware is used to secure routes requiring user authentication:
+
+- **Protected Routes**: `/changepassword`, `/loggeduser`
+
+### Middleware Configuration
+
+In `routes.js`, the middleware is applied as follows:
+
+```javascript
+// Route-Level Middlewares - To Protect Routes
+router.use('/changepassword', checkUserAuth)
+router.use('/loggeduser', checkUserAuth)
+```
 
 ## <a name="acknowledgements">👏 Acknowledgements</a>
 
