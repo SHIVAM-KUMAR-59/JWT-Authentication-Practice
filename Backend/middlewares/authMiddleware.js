@@ -6,7 +6,6 @@ var checkUserAuth = async (req, res, next) => {
   let token
   // Extract the 'authorization' header from the incoming request
   const { authorization } = req.headers
-
   // Check if the authorization header exists and starts with 'Bearer'
   if (authorization && authorization.startsWith('Bearer')) {
     try {

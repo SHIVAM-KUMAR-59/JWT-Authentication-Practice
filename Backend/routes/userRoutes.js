@@ -15,7 +15,7 @@ router.post(
   '/send-reset-password-email',
   UserController.sendUserPasswordResetEmail,
 )
-router.post('/reset-password/:id/:token', UserController.userPasswordRest)
+router.post('/reset-password/:id/:token', UserController.userPasswordReset)
 
 // Protected Routes
 router.post('/changepassword', UserController.changeUserPassword)
